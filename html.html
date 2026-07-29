@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urgent Diplomatic Briefing</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            text-align: center;
+            color: #333;
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            color: #d81b60;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            min-height: 80px; /* keeps the card height stable */
+        }
+
+        button {
+            background-color: #d81b60;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #ad144d;
+            transform: scale(1.05);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        #noBtn {
+            background-color: #888;
+            position: relative; 
+        }
+
+        /* Success screen styling */
+        #successScreen {
+            font-size: 22px;
+            font-weight: bold;
+            color: #d81b60;
+        }
+        
+        .emoji {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card" id="mainCard">
+        <div class="emoji" id="emojiHeader">🚨</div>
+        <h1 id="title">URGENT ASMUN CRISIS UPDATE</h1>
+        <p id="content">A highly classified diplomatic proposal requires your immediate attention.</p>
+        
+        <button id="nextBtn" onclick="nextReason()">Begin Briefing</button>
+
+        <div class="btn-container hidden" id="actionBtns">
+            <button id="yesBtn" onclick="sayYes()">YES!</button>
+            <button id="noBtn">NO</button>
+        </div>
+    </div>
+
+    <script>
+        const reasons = [
+            { emoji: "🦒", title: "I am 6'4\"", text: "you can wear the highest heels you own plus im also gud selfie stand" },
+            { emoji: "🎭", title: "I'm Certified Funny", text: "At least 80% of my jokes land." },
+            { emoji: "✍️", title: "I'm an ASMUN Scribe", text: "I will be taking extensive mental notes on how amazing you look." },
+            { emoji: "🎩", title: "Unmatched Respect", text: "Chivalry isn't dead. I will open doors, pull out chairs and wont make you feel like an option" },
+            { emoji: "👑", title: "Best Delegate Status", text: "I was last year's Best Delegate. Since Prom is literally AT ASMUN, you'll basically be arriving with local royalty. Major flex." }
+        ];
+
+        let currentIndex = -1;
+
+        const emojiHeader = document.getElementById("emojiHeader");
+        const titleEl = document.getElementById("title");
+        const contentEl = document.getElementById("content");
+        const nextBtn = document.getElementById("nextBtn");
+        const actionBtns = document.getElementById("actionBtns");
+        const noBtn = document.getElementById("noBtn");
+        const card = document.getElementById("mainCard");
+
+        function nextReason() {
+            currentIndex++;
+
+            if (currentIndex < reasons.length) {
+                emojiHeader.innerText = reasons[currentIndex].emoji;
+                titleEl.innerText = reasons[currentIndex].title;
+                contentEl.innerText = reasons[currentIndex].text;
+                nextBtn.innerText = "Next Reason ➔";
+            } else {
+                // Time for the grand finale
+                emojiHeader.innerText = "🥺";
+                titleEl.innerText = "The Final Resolution";
+                contentEl.innerHTML = "Taking all this highly compelling evidence into account...<br><br><b>Will you go to the ASMUN Prom with me?</b>";
+                nextBtn.classList.add("hidden");
+                actionBtns.classList.remove("hidden");
+            }
+        }
+
+        // The Surprise: Running "No" Button
+        noBtn.addEventListener("mouseover", function() {
+            // Get viewport dimensions
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            
+            // Get button dimensions
+            const btnWidth = noBtn.offsetWidth;
+            const btnHeight = noBtn.offsetHeight;
+
+            // Calculate random positions within the visible window
+            const randomX = Math.floor(Math.random() * (windowWidth - btnWidth));
+            const randomY = Math.floor(Math.random() * (windowHeight - btnHeight));
+
+            // Pull the button out of the flow and teleport it
+            noBtn.style.position = "fixed";
+            noBtn.style.left = randomX + "px";
+            noBtn.style.top = randomY + "px";
+        });
+
+        // What happens when she says yes!
+        function sayYes() {
+            card.innerHTML = `
+                <div class="emoji">🎉💖🏛️</div>
+                <div id="successScreen">
+                    Resolution Passed! <br><br>
+                    <span style="font-size: 18px; color: #333; font-weight: normal;">
+                        Best Delegate secured the best date. Can't wait for prom!
+                    </span>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
