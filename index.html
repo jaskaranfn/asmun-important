@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Urgent Diplomatic Briefing</title>
     <style>
         body {
@@ -21,38 +21,46 @@
 
         .card {
             background: white;
-            padding: 40px;
+            padding: 40px 20px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            max-width: 500px;
             width: 90%;
+            max-width: 600px;
+            min-height: 75vh; /* Makes it fill most of the mobile screen */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             position: relative;
             z-index: 10;
         }
 
         h1 {
             color: #d81b60;
-            font-size: 24px;
+            font-size: 26px;
             margin-bottom: 20px;
+            padding: 0 10px;
         }
 
         p {
-            font-size: 18px;
+            font-size: 20px;
             line-height: 1.6;
             margin-bottom: 30px;
-            min-height: 80px; /* keeps the card height stable */
+            padding: 0 15px;
+            min-height: 120px; /* keeps the card height stable */
         }
 
         button {
             background-color: #d81b60;
             color: white;
             border: none;
-            padding: 12px 24px;
-            font-size: 16px;
+            padding: 15px 30px;
+            font-size: 18px;
             border-radius: 50px;
             cursor: pointer;
             transition: transform 0.2s, background-color 0.2s;
             font-weight: bold;
+            box-shadow: 0 4px 15px rgba(216, 27, 96, 0.3);
         }
 
         button:hover {
@@ -67,13 +75,18 @@
         .btn-container {
             display: flex;
             justify-content: center;
+            align-items: center;
             gap: 20px;
             margin-top: 20px;
+            width: 100%;
+            min-height: 60px;
         }
 
         #noBtn {
             background-color: #888;
+            box-shadow: 0 4px 15px rgba(136, 136, 136, 0.3);
             position: relative; 
+            touch-action: none; /* Crucial for preventing mobile scroll lock */
         }
 
         /* Success screen styling */
@@ -84,8 +97,14 @@
         }
         
         .emoji {
-            font-size: 40px;
+            font-size: 50px;
             margin-bottom: 15px;
+        }
+
+        @media (max-width: 400px) {
+            h1 { font-size: 22px; }
+            p { font-size: 18px; }
+            .card { min-height: 85vh; }
         }
     </style>
 </head>
@@ -141,24 +160,32 @@
             }
         }
 
-        // The Surprise: Running "No" Button
-        noBtn.addEventListener("mouseover", function() {
-            // Get viewport dimensions
+        // The Fix: Running "No" Button for both Mouse and Mobile Touch
+        function moveButton(e) {
+            // Prevent default touch behavior so mobile doesn't register phantom clicks or scroll
+            if (e.type === 'touchstart') {
+                e.preventDefault();
+            }
+
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
             
-            // Get button dimensions
             const btnWidth = noBtn.offsetWidth;
             const btnHeight = noBtn.offsetHeight;
 
-            // Calculate random positions within the visible window
-            const randomX = Math.floor(Math.random() * (windowWidth - btnWidth));
-            const randomY = Math.floor(Math.random() * (windowHeight - btnHeight));
+            // Calculate random positions keeping a safe padding from the edges
+            const randomX = Math.max(20, Math.floor(Math.random() * (windowWidth - btnWidth - 40)));
+            const randomY = Math.max(20, Math.floor(Math.random() * (windowHeight - btnHeight - 40)));
 
-            // Pull the button out of the flow and teleport it
             noBtn.style.position = "fixed";
             noBtn.style.left = randomX + "px";
             noBtn.style.top = randomY + "px";
+            noBtn.style.zIndex = "9999";
+        }
+
+        // Add event listeners for mouseenter, click, and touchstart
+        ['mouseenter', 'touchstart', 'click'].forEach(eventType => {
+            noBtn.addEventListener(eventType, moveButton, { passive: false });
         });
 
         // What happens when she says yes!
